@@ -31,10 +31,9 @@ PAdptArray CreateAdptArray(COPY_FUNC copyFunc_, DEL_FUNC delFunc_, PRINT_FUNC pr
 // Set an element at a given index in the AdptArray
 Result SetAdptArrayAt(PAdptArray pArr, int idx, PElement pNewElem)
 {
-	if (idx < 0) return FAIL;
     PElement* newpElemArr;
     // Check if the AdptArray is NULL
-    if (pArr == NULL) return FAIL;
+    if (pArr == NULL || idx < 0) return FAIL;
     // If the index is larger than the current
 	if (idx >= pArr->ArrSize)
 	{
@@ -58,7 +57,8 @@ Result SetAdptArrayAt(PAdptArray pArr, int idx, PElement pNewElem)
     }
 	
     // Set the new element at the given index
-    (pArr->pElemArr)[idx] = pArr->copyFunc(pNewElem);
+    if(pNewElem != NULL)
+        (pArr->pElemArr)[idx] = pArr->copyFunc(pNewElem);
 
     // Update the size of the array
 	pArr->ArrSize = (idx >= pArr->ArrSize) ? (idx + 1) : pArr->ArrSize;
@@ -71,8 +71,8 @@ void DeleteAdptArray(PAdptArray pArr)
 	// Check if the array is null
     if (pArr == NULL) return;
     // Delete each element in the array
-	for(int i = 0; i < pArr->ArrSize; ++i)
-		if((pArr->pElemArr)[i] != NULL)
+    for(int i = 0; i < pArr->ArrSize; ++i)
+        if((pArr->pElemArr)[i] != NULL)
             // Call the element's delete function
             pArr->delFunc((pArr->pElemArr)[i]);
 
